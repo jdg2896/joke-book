@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>📒 Joke Book</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Password Screen -->
+  <div id="password-screen">
+    <div class="lock-card">
+      <div class="lock-emoji">🔒</div>
+      <h1>Joke Book</h1>
+      <p class="subtitle">Enter the password to continue</p>
+      <div class="input-row">
+        <input
+          id="password-input"
+          type="password"
+          placeholder="Password"
+          autocomplete="current-password"
+        />
+        <button id="unlock-btn">Unlock</button>
+      </div>
+      <p id="error-msg" class="error-msg hidden">Wrong password, try again!</p>
+    </div>
+  </div>
+
+  <!-- App -->
+  <div id="app" class="hidden">
+    <header>
+      <span class="header-emoji">📒</span>
+      <h1>Joke Book</h1>
+    </header>
+
+    <main>
+      <div id="joke-card" class="joke-card" role="button" tabindex="0" aria-label="Tap to reveal">
+        <div id="card-stage" class="card-stage stage-question">
+          <div id="question-text" class="joke-question"></div>
+          <div id="followup-block" class="followup-block hidden">
+            <span class="followup-label">They ask:</span>
+            <span id="followup-text" class="followup-text"></span>
+          </div>
+          <div id="answer-block" class="answer-block hidden">
+            <div id="answer-text" class="joke-answer"></div>
+          </div>
+        </div>
+        <div id="tap-hint" class="tap-hint">Tap to reveal ✨</div>
+      </div>
+
+      <div class="controls">
+        <button id="next-btn" class="next-btn">Next joke →</button>
+        <span id="joke-counter" class="joke-counter"></span>
+      </div>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

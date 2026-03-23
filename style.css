@@ -1,0 +1,276 @@
+/* ── Reset & Base ─────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:        #fff4f9;
+  --card-bg:   #ffffff;
+  --pink:      #ff8fab;
+  --pink-dark: #e8607a;
+  --purple:    #d4aaff;
+  --yellow:    #ffe066;
+  --text:      #3d2c3e;
+  --muted:     #9a7fa0;
+  --radius:    24px;
+  --shadow:    0 8px 32px rgba(180, 100, 150, 0.13);
+}
+
+body {
+  font-family: 'Nunito', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+/* ── Password Screen ──────────────────────────────── */
+#password-screen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.lock-card {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 40px 36px 36px;
+  max-width: 380px;
+  width: 100%;
+  text-align: center;
+  animation: pop-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.lock-emoji { font-size: 2.8rem; margin-bottom: 10px; }
+
+.lock-card h1 {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--pink-dark);
+}
+
+.subtitle {
+  font-size: 0.95rem;
+  color: var(--muted);
+  margin: 6px 0 22px;
+}
+
+.input-row {
+  display: flex;
+  gap: 10px;
+}
+
+.input-row input {
+  flex: 1;
+  padding: 12px 16px;
+  border: 2px solid #f0d6e8;
+  border-radius: 14px;
+  font-family: inherit;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.2s;
+  color: var(--text);
+  background: #fff8fb;
+}
+
+.input-row input:focus { border-color: var(--pink); }
+
+.input-row button {
+  padding: 12px 20px;
+  background: var(--pink);
+  color: white;
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 1rem;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+  white-space: nowrap;
+}
+
+.input-row button:hover  { background: var(--pink-dark); }
+.input-row button:active { transform: scale(0.96); }
+
+.error-msg {
+  margin-top: 14px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #e8607a;
+}
+
+/* ── App ──────────────────────────────────────────── */
+#app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 480px;
+  animation: pop-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 28px;
+}
+
+.header-emoji { font-size: 1.8rem; }
+
+header h1 {
+  font-size: 1.9rem;
+  font-weight: 800;
+  color: var(--pink-dark);
+}
+
+/* ── Joke Card ────────────────────────────────────── */
+.joke-card {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 36px 32px 28px;
+  width: 100%;
+  cursor: pointer;
+  user-select: none;
+  outline: none;
+  position: relative;
+  transition: transform 0.15s, box-shadow 0.15s;
+  /* pastel border accent that cycles */
+  border: 3px solid var(--purple);
+}
+
+.joke-card:hover  { transform: translateY(-3px); box-shadow: 0 14px 40px rgba(180,100,150,0.18); }
+.joke-card:active { transform: scale(0.98); }
+.joke-card:focus-visible { outline: 3px solid var(--pink); outline-offset: 4px; }
+
+.joke-question {
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.5;
+  color: var(--text);
+  min-height: 60px;
+}
+
+.followup-block {
+  margin-top: 20px;
+  background: #fff4f4;
+  border-left: 4px solid var(--pink);
+  border-radius: 10px;
+  padding: 10px 14px;
+  animation: slide-up 0.3s ease;
+}
+
+.followup-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  display: block;
+  margin-bottom: 2px;
+}
+
+.followup-text {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--pink-dark);
+}
+
+.answer-block {
+  margin-top: 20px;
+  animation: slide-up 0.3s ease;
+}
+
+.joke-answer {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #7c3fa0;
+  line-height: 1.45;
+}
+
+.tap-hint {
+  margin-top: 24px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--muted);
+  text-align: center;
+  letter-spacing: 0.03em;
+  transition: opacity 0.2s;
+}
+
+/* ── Controls ─────────────────────────────────────── */
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 22px;
+  width: 100%;
+  gap: 16px;
+}
+
+.next-btn {
+  padding: 12px 28px;
+  background: var(--yellow);
+  color: #3d2c0e;
+  font-family: inherit;
+  font-weight: 800;
+  font-size: 1rem;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+  white-space: nowrap;
+}
+
+.next-btn:hover  { background: #ffd633; }
+.next-btn:active { transform: scale(0.96); }
+
+.joke-counter {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+/* ── Utilities ────────────────────────────────────── */
+.hidden { display: none !important; }
+
+/* shake on wrong password */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%       { transform: translateX(-8px); }
+  40%       { transform: translateX(8px); }
+  60%       { transform: translateX(-5px); }
+  80%       { transform: translateX(5px); }
+}
+
+.shake { animation: shake 0.4s ease; }
+
+@keyframes pop-in {
+  from { opacity: 0; transform: scale(0.92) translateY(12px); }
+  to   { opacity: 1; transform: scale(1)    translateY(0); }
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* card refresh flash */
+@keyframes card-flash {
+  0%   { opacity: 0.3; transform: scale(0.97); }
+  100% { opacity: 1;   transform: scale(1); }
+}
+
+.card-flash { animation: card-flash 0.25s ease forwards; }
+
+/* ── Responsive ───────────────────────────────────── */
+@media (max-width: 400px) {
+  .lock-card  { padding: 32px 22px 28px; }
+  .joke-card  { padding: 28px 20px 22px; }
+  header h1   { font-size: 1.5rem; }
+}
