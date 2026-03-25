@@ -10,6 +10,78 @@ const ERROR_MESSAGES = [
   'Hint, it\'s our special day! 🎉',
 ];
 
+// ── Sounds ─────────────────────────────────────────────────────────────────
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+function playSound(type) {
+  const ctx = audioCtx;
+  const gain = ctx.createGain();
+  gain.connect(ctx.destination);
+
+  if (type === 'unlock') {
+    // Happy ascending chime
+    [523, 659, 784, 1047].forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      const g = ctx.createGain();
+      g.gain.setValueAtTime(0, ctx.currentTime + i * 0.1);
+      g.gain.linearRampToValueAtTime(0.25, ctx.currentTime + i * 0.1 + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.1 + 0.35);
+      osc.connect(g).connect(ctx.destination);
+      osc.start(ctx.currentTime + i * 0.1);
+      osc.stop(ctx.currentTime + i * 0.1 + 0.35);
+    });
+  } else if (type === 'error') {
+    // Low buzz
+    const osc = ctx.createOscillator();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(180, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(100, ctx.currentTime + 0.25);
+    gain.gain.setValueAtTime(0.18, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
+    osc.connect(gain);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.25);
+  } else if (type === 'reveal') {
+    // Soft pop
+    const osc = ctx.createOscillator();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(600, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(300, ctx.currentTime + 0.12);
+    gain.gain.setValueAtTime(0.18, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.12);
+    osc.connect(gain);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.12);
+  } else if (type === 'answer') {
+    // Two-note tada
+    [440, 660].forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      const g = ctx.createGain();
+      g.gain.setValueAtTime(0, ctx.currentTime + i * 0.13);
+      g.gain.linearRampToValueAtTime(0.22, ctx.currentTime + i * 0.13 + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.13 + 0.28);
+      osc.connect(g).connect(ctx.destination);
+      osc.start(ctx.currentTime + i * 0.13);
+      osc.stop(ctx.currentTime + i * 0.13 + 0.28);
+    });
+  } else if (type === 'next') {
+    // Quick whoosh
+    const osc = ctx.createOscillator();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(300, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(600, ctx.currentTime + 0.15);
+    gain.gain.setValueAtTime(0.14, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
+    osc.connect(gain);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.15);
+  }
+}
+
 async function sha256(str) {
   const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
   return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
@@ -50,9 +122,11 @@ async function tryUnlock() {
   const hash = await sha256(val);
 
   if (hash === PASSWORD_HASH) {
+    playSound('unlock');
     sessionStorage.setItem(AUTH_KEY, '1');
     showApp();
   } else {
+    playSound('error');
     errorMsg.textContent = ERROR_MESSAGES[Math.min(failCount, ERROR_MESSAGES.length - 1)];
     failCount++;
     errorMsg.classList.remove('hidden');
@@ -102,9 +176,11 @@ function advanceStage() {
   stage++;
 
   if (stage === 1) {
+    playSound('reveal');
     followupBlock.classList.remove('hidden');
     tapHint.textContent = 'Tap for the answer ✨';
   } else if (stage === 2) {
+    playSound('answer');
     answerBlock.classList.remove('hidden');
     tapHint.textContent = '';
   }
@@ -115,6 +191,7 @@ jokeCard.addEventListener('click', advanceStage);
 jokeCard.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') advanceStage(); });
 
 nextBtn.addEventListener('click', () => {
+  playSound('next');
   current = (current + 1) % jokes.length;
   // reshuffle when we wrap around so the order feels fresh
   if (current === 0) order = shuffle(order);
