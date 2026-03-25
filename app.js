@@ -4,6 +4,11 @@
 //   2. Paste the hash below.
 const PASSWORD_HASH = 'aaa63342d35955679b70420a9d3793935b71c12143db4a83bc346aede450c28d';
 const AUTH_KEY = 'jokebook_authed';
+const ERROR_MESSAGES = [
+  'Wrong password, try again!',
+  'Nope! Try again.',
+  'Hint, it\'s our special day! 🎉',
+];
 
 async function sha256(str) {
   const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
@@ -32,6 +37,7 @@ let jokes = [];
 let order = [];   // shuffled indices
 let current = 0;    // index into `order`
 let stage = 0;    // 0 = question, 1 = followup, 2 = answer
+let failCount = 0; // tracks sequential error messages
 
 // ── Auth ───────────────────────────────────────────────────────────────────
 function showApp() {
@@ -47,6 +53,8 @@ async function tryUnlock() {
     sessionStorage.setItem(AUTH_KEY, '1');
     showApp();
   } else {
+    errorMsg.textContent = ERROR_MESSAGES[Math.min(failCount, ERROR_MESSAGES.length - 1)];
+    failCount++;
     errorMsg.classList.remove('hidden');
     const lockCard = document.querySelector('.lock-card');
     lockCard.classList.remove('shake');

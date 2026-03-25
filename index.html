@@ -21,12 +21,14 @@
         <input
           id="password-input"
           type="password"
-          placeholder="Password"
+          placeholder="6-digit password"
           autocomplete="current-password"
+          maxlength="6"
+          inputmode="numeric"
         />
         <button id="unlock-btn">Unlock</button>
       </div>
-      <p id="error-msg" class="error-msg hidden">Wrong password, try again!</p>
+      <p id="error-msg" class="error-msg hidden"></p>
     </div>
   </div>
 
