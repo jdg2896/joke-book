@@ -9,6 +9,11 @@ const ERROR_MESSAGES = [
   'Nope! Try again.',
   'Hint, it\'s our special day! 🎉',
 ];
+const IS_MOBILE_SAFARI =
+  /Safari/i.test(navigator.userAgent) &&
+  !/CriOS|FxiOS|EdgiOS/i.test(navigator.userAgent) &&
+  ((/iP(ad|hone|od)/i.test(navigator.userAgent)) ||
+    (/Macintosh/i.test(navigator.userAgent) && navigator.maxTouchPoints > 1));
 
 // ── Sounds ─────────────────────────────────────────────────────────────────
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -110,11 +115,31 @@ let order = [];   // shuffled indices
 let current = 0;    // index into `order`
 let stage = 0;    // 0 = question, 1 = followup, 2 = answer
 let failCount = 0; // tracks sequential error messages
+let lastNextTouchAt = 0;
+let lastTouchEndAt = 0;
 
 // ── Auth ───────────────────────────────────────────────────────────────────
 function showApp() {
   passwordScreen.classList.add('hidden');
   app.classList.remove('hidden');
+}
+
+function setupSafariZoomGuards() {
+  if (!IS_MOBILE_SAFARI) return;
+
+  document.addEventListener('gesturestart', event => {
+    event.preventDefault();
+  }, { passive: false });
+
+  document.addEventListener('touchend', event => {
+    const now = Date.now();
+
+    if (now - lastTouchEndAt < 300) {
+      event.preventDefault();
+    }
+
+    lastTouchEndAt = now;
+  }, { passive: false });
 }
 
 async function tryUnlock() {
@@ -190,16 +215,33 @@ function advanceStage() {
 jokeCard.addEventListener('click', advanceStage);
 jokeCard.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') advanceStage(); });
 
-nextBtn.addEventListener('click', () => {
+function showNextJoke() {
   playSound('next');
   current = (current + 1) % jokes.length;
   // reshuffle when we wrap around so the order feels fresh
   if (current === 0) order = shuffle(order);
   loadJoke(current);
+}
+
+nextBtn.addEventListener('touchend', event => {
+  lastNextTouchAt = Date.now();
+  event.preventDefault();
+  showNextJoke();
+}, { passive: false });
+
+nextBtn.addEventListener('click', event => {
+  if (Date.now() - lastNextTouchAt < 500) {
+    event.preventDefault();
+    return;
+  }
+
+  showNextJoke();
 });
 
 // ── Init ───────────────────────────────────────────────────────────────────
 async function init() {
+  setupSafariZoomGuards();
+
   // Skip password screen if already authed this session
   if (sessionStorage.getItem(AUTH_KEY) === '1') {
     showApp();
