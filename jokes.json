@@ -93,5 +93,25 @@
     "question": "Ano ang masyadong malaki na inumin?",
     "followUp": "Ano?",
     "answer": "Tubig."
+  },
+  {
+    "question": "What do you call a black man on the moon?",
+    "followUp": "What?",
+    "answer": "An astronaut."
+  },
+  {
+    "question": "Ano ang first name ni Kenji?",
+    "followUp": "Ano?",
+    "answer": "Ice."
+  },
+  {
+    "question": "Ano ang favorite cooking utensil ng panda?",
+    "followUp": "Ano?",
+    "answer": "Edi pan, duh!"
+  },
+  {
+    "question": "Why is 6 afraid of 7?",
+    "followUp": "Why?",
+    "answer": "Because 7 8 9."
   }
 ]
